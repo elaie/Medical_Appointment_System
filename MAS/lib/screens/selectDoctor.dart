@@ -208,6 +208,7 @@ class _selectDoctorState extends State<selectDoctor> {
     }
 
     return Scaffold(
+      appBar: AppBar (title: Text("Our Recommended Doctors Are "),),
       // appBar: widget.doctorName!
       //     ? AppBar(
       //   title: Text("${widget.doctorName}"),
@@ -226,6 +227,7 @@ class _selectDoctorState extends State<selectDoctor> {
                     child: CircularProgressIndicator(),
                   )
                 : ListView.builder(
+                    shrinkWrap: true,
                     itemCount: snapshots.data!.docs.length,
                     itemBuilder: (context, index) {
                       var data = snapshots.data!.docs[index].data()

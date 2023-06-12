@@ -1,5 +1,6 @@
 import 'package:doctor/common/doctorCard.dart';
 import 'package:doctor/model/Doctors.dart';
+import 'package:doctor/screens/Dcard.dart';
 import 'package:doctor/screens/appointment_page.dart';
 import 'package:doctor/screens/homePage.dart';
 import 'package:doctor/screens/invstigation_report.dart';
@@ -21,7 +22,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   TabController? tabController;
   List<Widget> pages = [
     const HomePage(),
-    DoctorCard(
+    DoctorCardSecond(
       query: "",
     ),
     const ReportPage(),

@@ -13,14 +13,14 @@ import '../common/user_info_card.dart';
 import '../provider/TimeProvider.dart';
 import 'selectDoctor.dart';
 
-class AppointmentPage extends StatefulWidget {
+class AppointmentDirect extends StatefulWidget {
   String? doctorName;
   String? specialization;
   String? doctorId;
   String? nmcNo;
   String? selectedTime;
 
-  AppointmentPage({Key? key,
+  AppointmentDirect({Key? key,
     this.doctorName,
     this.specialization,
     this.doctorId,
@@ -29,10 +29,10 @@ class AppointmentPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<AppointmentPage> createState() => _AppointmentPageState();
+  State<AppointmentDirect> createState() => _AppointmentDirectState();
 }
 
-class _AppointmentPageState extends State<AppointmentPage> {
+class _AppointmentDirectState extends State<AppointmentDirect> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime _focusedDay = DateTime.now();
   bool isChecked = false;
@@ -283,7 +283,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     if (_formKey.currentState!.validate()) {
       print("VALIDATE VAYO");
     }
-    else{
+    else {
       print("VALIDATE VAYENA");
       AlertInfo(
           message: "Symptoms field must not be empty",
@@ -292,28 +292,44 @@ class _AppointmentPageState extends State<AppointmentPage> {
       return;
     }
     if (!_selectedDay!.isBefore(DateTime.now())) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    selectDoctor(
-                      userId: user!.uid,
-                      date: date,
-                      time: context
-                          .read<TimeProvider>()
-                          .timeSelected,
-                      doctorName: widget.doctorName,
-                      doctorId: widget.doctorId,
-                      symptoms: _symptomsController.text.trim(),
-                      userName: user.displayName,
-                      cValue: cValue,
-                    )
-            )
-        );
-    } else {
-      AlertInfo(
-          message: "Date Can't Be In Past", backgroundColor: shrineErrorRed)
-          .showInfo(context);
+      if (!_selectedDay!.isBefore(DateTime.now())) {
+        try {
+          await db
+              .collection('appointmentDetails')
+              .add({
+            "userId": user!.uid,
+            "date": date,
+            "time": context
+                .read<TimeProvider>()
+                .timeSelected,
+            "doctor": widget.doctorName,
+            "doctorId": widget.doctorId,
+            "symptoms": _symptomsController.text.trim(),
+            "userName": user.displayName,
+            "Urgent": cValue,
+          })
+              .then((value) =>
+              AlertInfo(
+                  message: "Appointment Booked",
+                  isSuccess: true,
+                  backgroundColor: successAlert)
+                  .showInfo(context))
+              .then((value) => Navigator.pop(context));
+        } on FirebaseException catch (ex) {
+          log(ex.toString());
+          AlertInfo(
+              message: "Some Error Occured", backgroundColor: shrineErrorRed)
+              .showInfo(context);
+        } catch (ex) {
+          AlertInfo(
+              message: "Some Error Occured", backgroundColor: shrineErrorRed)
+              .showInfo(context);
+        }
+      } else {
+        AlertInfo(
+            message: "Date Can't Be In Past", backgroundColor: shrineErrorRed)
+            .showInfo(context);
+      }
     }
   }
 }

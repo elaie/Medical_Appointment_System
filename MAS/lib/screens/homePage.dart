@@ -2,11 +2,12 @@ import 'dart:developer';
 
 import 'package:doctor/common/categories_card.dart';
 import 'package:doctor/common/doctorCard.dart';
+import 'package:doctor/screens/Dcard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'appointment_page.dart';
 import '../common/user_info_card.dart';
-
+import 'appFDoc.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         Flexible(
-            child: DoctorCard(
+            child: DoctorCardSecond(
           search: true,
           query: query!,
         )),
